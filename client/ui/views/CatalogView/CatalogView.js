@@ -9,7 +9,7 @@ Dependency.autorun(function(){
 // CatalogView Helpers
 Template.CatalogView.helpers({
   catalog_products: function(){
-    return catalogStore.getProductsInPage();
+    return  Blaze._globalHelpers.getProductsInPage();
   },
   left_arrow_class: function(){
     if (catalogRouter.is.firstPage())
@@ -46,7 +46,7 @@ Template.CatalogView.helpers({
     return pages_array;
   },
   productsInPageReady: function () {
-    return catalogStore.getProductsInPageReady();
+    return Blaze._globalHelpers.getProductsInPageReady();
   }
 });
 

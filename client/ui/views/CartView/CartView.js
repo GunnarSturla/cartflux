@@ -11,22 +11,22 @@ Template.CartView.helpers({
     return cartStore.getItems();
   },
   product: function(){
-    return catalogStore.getOneProduct(this.product_id);
+    return Blaze._globalHelpers.getOneProduct(this.product_id);
   },
   total_item_price: function(){
-    var unit_price = catalogStore.getOneProduct(this.product_id).price;
+    var unit_price = Blaze._globalHelpers.getOneProduct(this.product_id).price;
     return this.quantity * unit_price;
   },
   total_cart_price: function(){
     var total = 0;
     cartStore.getItems().forEach(function(cart_item){
-      var unit_price = catalogStore.getOneProduct(cart_item.product_id).price;
+      var unit_price = Blaze._globalHelpers.getOneProduct(cart_item.product_id).price;
       total = total + unit_price * cart_item.quantity;
     });
     return total;
   },
   cart_items_count: function(){
-    return cartStore.getItems().count();
+    return Blaze._globalHelpers.getItems().count();
   }
 });
 

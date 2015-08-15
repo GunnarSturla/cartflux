@@ -18,7 +18,7 @@ CountersStore = function(){
   self.subscriptions = {
     catalogCounter: function(template){
       template.autorun(function(){
-        template.subscribe('CountersStore.CatalogCounter', CatalogStore.getSearchQuery());
+        template.subscribe('CountersStore.CatalogCounter',  Blaze._globalHelpers.getSearchQuery());
       });
     }
   };
