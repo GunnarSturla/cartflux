@@ -29,11 +29,9 @@ CatalogStore.helpers({
     return Catalog.findOne(id);
   },
   getUserIsAddingProduct: function () {
-    console.log(this);
     return this._addingProduct.get();
   },
   getNumberOfProducts: function () {
-    console.log(this);
     return countersStore.get.numberOfProducts();
   },
   getProductsInPage: function () {

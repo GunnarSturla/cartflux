@@ -39,7 +39,6 @@ Template.AddProductView.events({
 
 Template.AddProductView.onCreated(function(){
   var self = this;
-  console.log('AddProductView Created');
 
   self.autorun(function(){
     var adding_product = catalogStore.getUserIsAddingProduct();

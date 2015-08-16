@@ -4,109 +4,95 @@
 var reactive = new ReactiveDict('CartStore');
 
 
-CartStore = function () {
+CartStore = new Store('CartStore', function () {
   var self = this;
 
   // REACTIVE VARS
   reactive.setDefault('cartId', Meteor.userId() || Random.id());
+});
 
+CartStore.actions({
   // CALLBACKS
   // Take a product id and add that product to the cart. If the product is
   // already in the cart, it calls a method to increase the quantity.
-  var onAddCartItem = function (product_id) {
-    var cart_id   = reactive.get("cartId");
-    var cart_item = Cart.findOne({product_id: product_id, cart_id: cart_id });
-    if ( !cart_item ) {
+  ADD_CART_ITEM: function (payload) {
+    var self = this;
+    var cart_id = reactive.get("cartId");
+    var product_id = payload.item._id;
+    var cart_item = Cart.findOne({product_id: product_id, cart_id: cart_id});
+    if (!cart_item) {
       // The cart item doesn't exist, so we are going to add it
       Meteor.call('CartStore.addCartItem', product_id, reactive.get('cartId'));
     } else {
       // The cart item exists, so we are going to increase it
-      onIncreaseCartItem(cart_item._id);
+      self.INCREASE_CART_ITEM(payload);
     }
-  };
+  },
 
   // Take a cart item id and increase its quantity by one
-  var onIncreaseCartItem = function (id) {
-    Meteor.call('CartStore.increaseCartItem', id);
-  };
+  INCREASE_CART_ITEM: function (payload) {
+    Meteor.call('CartStore.increaseCartItem', payload.item._id);
+  },
 
   // Take a cart item id and decrease its quantity by one
-  var onDecreaseCartItem = function (id) {
+  DECREASE_CART_ITEM: function (payload) {
+    var self = this;
+    var id = payload.item._id;
     var cart_item = Cart.findOne(id);
-    if ( cart_item.quantity === 1 ) {
-      onRemoveCartItem(id);
+
+    if (cart_item.quantity === 1) {
+      self.REMOVE_CART_ITEM(payload);
     } else {
       Meteor.call('CartStore.decreaseCartItem', id);
     }
-  };
+  },
 
   // Take a cart item id and remove it from the cart
-  var onRemoveCartItem = function (id) {
-    Meteor.call('CartStore.removeCartItem', id);
-  };
+  REMOVE_CART_ITEM: function (payload) {
+    Meteor.call('CartStore.removeCartItem', payload.item._id);
+  },
 
   // Take a product id which has been removed and remove that cart item
   // from the cart.
-  var onRemoveProduct = function (product_id) {
-    Meteor.call('CartStore.removeProduct', product_id);
-  };
+  REMOVE_PRODUCT: function (payload) {
+    Meteor.call('CartStore.removeProduct', payload.product._id);
+  },
 
   // When the user logs in, we change all the cartId values of the cart
   // items, from the initial random id generated for the anonymous user to
   // the id of the current user.
-  var onLoginSucceed = function () {
+  LOGIN_SUCCEED: function () {
     Meteor.call('CartStore.updateAllCartIds', self.getCartId());
     // Then, update our cartId to the userId
     reactive.set("cartId", Meteor.userId());
-  };
+  },
+  CREATE_ACCOUNT_SUCCEED: function () {
+    this.LOGIN_SUCCEED();
+  }
+});
 
-  // GETTERS
+CartStore.helpers({
+  // GETTERS => HELPERS
   // Return all the cart items with the cartId of the user.
-  self.getItems = function () {
+  getItems: function () {
+    var self = this;
     return Cart.find({cart_id: self.getCartId()});
-  };
+  },
 
   // Return the items of cart. This is used to suscribe to those products
   // so their info is in the minimongo.
-  self.getProductsInCart = function () {
+  getProductsInCart: function () {
+    var self = this;
     return self.getItems().fetch();
-  };
+  },
 
   // Return the cartId. This is a random Id if the user is not logged in
   // and the user id if the user is logged in.
-  self.getCartId = function () {
+  getCartId: function () {
     return reactive.get("cartId");
-  };
+  }
+});
 
-  // Register
-  self.tokenId = Dispatcher.register(function (payload) {
-    switch(payload.actionType) {
-      case "ADD_CART_ITEM":
-        onAddCartItem(payload.item._id);
-        break;
-      case "INCREASE_CART_ITEM":
-        onIncreaseCartItem(payload.item._id);
-        break;
-      case "DECREASE_CART_ITEM":
-        onDecreaseCartItem(payload.item._id);
-        break;
-      case "REMOVE_CART_ITEM":
-        onRemoveCartItem(payload.item._id);
-        break;
-      case "REMOVE_PRODUCT":
-        onRemoveProduct(payload.product._id);
-        break;
-      case "LOGIN_SUCCEED":
-        onLoginSucceed();
-        break;
-      case "CREATE_ACCOUNT_SUCCEED":
-        onLoginSucceed();
-        break;
-    }
-  });
-
-  return self;
-};
 
 // Initialize
-Dependency.add('CartStore', new CartStore());
+Dependency.add('CartStore', CartStore);
