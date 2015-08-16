@@ -1,13 +1,13 @@
 // Dependencies
 var catalogStore;
 Dependency.autorun(function(){
-  //  catalogStore = Dependency.get('CatalogStore');
+    catalogStore = Dependency.get('CatalogStore');
 });
 
 Template.AddProductView.helpers({
   catalog_error: function(){
     // process the error in the frontend
-    var adding_product = Blaze._globalHelpers.getSearchedProducts();
+    var adding_product = catalogStore.getSearchedProducts();
     if (adding_product === false){
       $('#product_name').val('');
       $('#product_price').val('');
@@ -42,11 +42,7 @@ Template.AddProductView.onCreated(function(){
   console.log('AddProductView Created');
 
   self.autorun(function(){
-    console.log(self);
-    var adding_product = Blaze._globalHelpers.getUserIsAddingProduct();
-
-    console.log('adding_product: ');
-    console.log(adding_product);
+    var adding_product = catalogStore.getUserIsAddingProduct();
 
     if (adding_product === true) {
       $('#AddProductModal').openModal({dismissible: false});

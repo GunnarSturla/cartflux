@@ -48,7 +48,7 @@ CatalogRouter = function(){
       return actualPage.get();
     },
     numberOfPages: function(){
-      var total_products = Blaze._globalHelpers.getNumberOfProducts();
+      var total_products = catalogStore.getNumberOfProducts();
       var pages          = Math.ceil(total_products/productsPerPage.get());
       return pages;
     },
@@ -94,12 +94,12 @@ CatalogRouter = function(){
 
     // Subscriptions
     Tracker.autorun(function(){
-      var searchQuery     = Blaze._globalHelpers.getSearchQuery();
+      var searchQuery     = catalogStore.getSearchQuery();
       var actualPage      = self.get.actualPage();
       var productsPerPage = self.get.productsPerPage();
 
       Meteor.subscribe('CatalogStore.searchedProducts',
-        searchQuery,
+        CatalogStore._searchQuery,
         (actualPage + 1) * productsPerPage
       );
     });

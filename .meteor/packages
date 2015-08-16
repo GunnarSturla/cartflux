@@ -16,3 +16,4 @@ reactive-dict
 meteorflux:reactive-dependency
 sanjo:jasmine
 velocity:html-reporter
+gunnarsturla:meteorflux-store

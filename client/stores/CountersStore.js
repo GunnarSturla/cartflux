@@ -2,9 +2,9 @@ CountersStore = function(){
   var self = this;
 
   // Dependencies
-  var CatalogStore;
+  var catalogStore;
   Dependency.autorun(function(){
-    CatalogStore = Dependency.get('CatalogStore');
+    catalogStore = Dependency.get('CatalogStore');
   });
 
   // Getters
@@ -18,7 +18,7 @@ CountersStore = function(){
   self.subscriptions = {
     catalogCounter: function(template){
       template.autorun(function(){
-        template.subscribe('CountersStore.CatalogCounter',  Blaze._globalHelpers.getSearchQuery());
+        template.subscribe('CountersStore.CatalogCounter',  catalogStore.getSearchQuery());
       });
     }
   };
