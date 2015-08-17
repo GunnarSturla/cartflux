@@ -1,4 +1,4 @@
-CountersStore = new Store('', function() {
+CountersStore = new Store('CountersStore', function() {
   var self = this;
 
   // Dependencies

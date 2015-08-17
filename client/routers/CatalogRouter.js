@@ -99,7 +99,7 @@ CatalogRouter = function(){
       var productsPerPage = self.get.productsPerPage();
 
       Meteor.subscribe('CatalogStore.searchedProducts',
-        CatalogStore._searchQuery,
+        CatalogStore.getSearchQuery(),
         (actualPage + 1) * productsPerPage
       );
     });

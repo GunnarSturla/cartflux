@@ -1,5 +1,5 @@
 // Creator
-CatalogStore = new Store('catalogStore', function() {
+CatalogStore = new Store('CatalogStore', function() {
   var self = this;
 
   // Reactive Vars
@@ -52,8 +52,8 @@ CatalogStore.helpers({
   },
   getProductsInPageReady: function () {
     var self = this;
-    //return true;
-    return self.getProductsInPage().count() !== 0;
+    return true;
+    //return self.getProductsInPage().count() !== 0;
   }
 });
 
@@ -79,13 +79,13 @@ CatalogStore.actions({
   ADD_ANOTHER_PRODUCT: function() {
     var self = this;
     var number = CatalogStore.getNumberOfProducts() + 1;
-    self.ADD_PRODUCT({product: {name: "Product "+ number, price: number}});
+    self._actions.ADD_PRODUCT({product: {name: "Product "+ number, price: number}});
   },
   ADD_ANOTHER_10_PRODUCTS: function() {
     var self = this;
     var number = CatalogStore.getNumberOfProducts() + 1;
     for (var i = number; i < (number + 10); i++) {
-      self.ADD_PRODUCT({product: {name: "Product "+ i, price: i}});
+      self._actions.ADD_PRODUCT({product: {name: "Product "+ i, price: i}});
     }
   },
   USER_IS_ADDING_PRODUCT: function() {
@@ -94,8 +94,8 @@ CatalogStore.actions({
   USER_CANCELED: function() {
     CatalogStore._addingProduct.set(false);
   },
-  USER_HAS_SEARCHED_PRODUCTS: function(search) {
-    CatalogStore._searchQuery.set(search);
+  USER_HAS_SEARCHED_PRODUCTS: function(payload) {
+    CatalogStore._searchQuery.set(payload.search);
   }
 });
 

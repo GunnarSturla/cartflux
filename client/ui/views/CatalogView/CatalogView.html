@@ -3,7 +3,7 @@
   <div class="row">
     <hr />
     <div class="col s12">
-      {{#if getProductsInPageReady}}
+      {{#if CatalogStore.getProductsInPageReady}}
         <table class="bordered striped responsive-table">
           <thead>
             <tr>
@@ -13,7 +13,7 @@
             </tr>
           </thead>
           <tbody>
-            {{#each catalog_products}}
+            {{#each CatalogStore.getProductsInPage}}
               <tr>
                 <td>{{name}}</td>
                 <td>${{price}}</td>

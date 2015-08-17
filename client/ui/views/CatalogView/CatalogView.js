@@ -8,9 +8,6 @@ Dependency.autorun(function(){
 
 // CatalogView Helpers
 Template.CatalogView.helpers({
-  catalog_products: function(){
-    return  Blaze._globalHelpers.getProductsInPage();
-  },
   left_arrow_class: function(){
     if (catalogRouter.is.firstPage())
       return "disabled";
@@ -44,9 +41,6 @@ Template.CatalogView.helpers({
       pages_array.push(item);
     }
     return pages_array;
-  },
-  productsInPageReady: function () {
-    return Blaze._globalHelpers.getProductsInPageReady();
   }
 });
 

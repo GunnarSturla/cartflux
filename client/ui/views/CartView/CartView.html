@@ -1,6 +1,6 @@
 <template name="CartView">
-  {{#if cart_items_count}}
-    <h4 class="grey-text text-darken-2">Cart ({{cart_items_count}} items)</h4>
+  {{#if CartStore.getItems.count}}
+    <h4 class="grey-text text-darken-2">Cart ({{CartStore.getItems.count}} items)</h4>
     <hr />
     <table class="bordered striped responsive-table">
       <thead>
@@ -13,12 +13,14 @@
         </tr>
       </thead>
       <tbody>
-      {{#each cart_items}}
+      {{#each CartStore.getItems}}
         <tr>
-          <td>{{product.name}}</td>
-          <td>${{product.price}}</td>
-          <td>{{quantity}}</td>
+            {{#with CatalogStore.getOneProduct this.product_id }}
+          <td>{{name}}</td>
+          <td>${{price}}</td>
+          <td>{{../quantity}}</td>
           <td>${{total_item_price}}</td>
+            {{/with}}
           <td>
             <button class="waves-effect waves-light btn increase"><i class="mdi-content-add"></i></button>
             <button class="waves-effect waves-light btn decrease"><i class="mdi-content-remove"></i></button>

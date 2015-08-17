@@ -1,5 +1,5 @@
 // UserStore Creator
-var UserStore = new Store('', function () {
+var UserStore = new Store('UserStore', function () {
   var self = this;
 
   // UserStore Reactive Vars

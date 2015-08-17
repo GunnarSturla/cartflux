@@ -7,15 +7,9 @@ Dependency.autorun(function(){
 
 // CartView helpers
 Template.CartView.helpers({
-  cart_items: function(){
-    return cartStore.getItems();
-  },
-  product: function(){
-    return catalogStore.getOneProduct(this.product_id);
-  },
   total_item_price: function(){
-    var unit_price = catalogStore.getOneProduct(this.product_id).price;
-    return this.quantity * unit_price;
+    var unit_price = this.price;
+    return Template.parentData().quantity * unit_price;
   },
   total_cart_price: function(){
     var total = 0;
@@ -24,9 +18,6 @@ Template.CartView.helpers({
       total = total + unit_price * cart_item.quantity;
     });
     return total;
-  },
-  cart_items_count: function(){
-    return cartStore.getItems().count();
   }
 });
 

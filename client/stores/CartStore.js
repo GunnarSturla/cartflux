@@ -25,7 +25,7 @@ CartStore.actions({
       Meteor.call('CartStore.addCartItem', product_id, reactive.get('cartId'));
     } else {
       // The cart item exists, so we are going to increase it
-      self.INCREASE_CART_ITEM(payload);
+      self._actions.INCREASE_CART_ITEM(payload);
     }
   },
 
@@ -41,7 +41,7 @@ CartStore.actions({
     var cart_item = Cart.findOne(id);
 
     if (cart_item.quantity === 1) {
-      self.REMOVE_CART_ITEM(payload);
+      self._actions.REMOVE_CART_ITEM(payload);
     } else {
       Meteor.call('CartStore.decreaseCartItem', id);
     }
@@ -67,7 +67,7 @@ CartStore.actions({
     reactive.set("cartId", Meteor.userId());
   },
   CREATE_ACCOUNT_SUCCEED: function () {
-    this.LOGIN_SUCCEED();
+    this._actions.LOGIN_SUCCEED();
   }
 });
 

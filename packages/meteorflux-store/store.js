@@ -16,6 +16,7 @@ Store.prototype.actions = function(actions) {
 
 			var params = _.omit(payload, 'actionType');
 
+
 			var func = self._actions[actionType];
 			func = _.bind(func, self);
 
@@ -27,14 +28,17 @@ Store.prototype.actions = function(actions) {
 Store.prototype.helpers = function(helpers) {
 	var self = this;
 
-	_.each(helpers, function(helper, key) {
-		// If the app state is stored in the Stores
-		// then there's no need to access the template instance
-		// OR IS THERE??
-		helper = _.bind(helper, self);
+	//_.each(helpers, function(helper, key) {
+	//	// If the app state is stored in the Stores
+	//	// then there's no need to access the template instance
+	//	// OR IS THERE??
+	//	helper = _.bind(helper, self);
+    //
+	//	Template.registerHelper(key, helper);
+	//});
 
-		Template.registerHelper(key, helper);
-	});
+	Template.registerHelper(self.name, helpers);
+
 	// Attach the helpers to the Store object
 	_.extend(this, helpers);
 
