@@ -20,5 +20,5 @@ Package.onUse(function(api) {
 Package.onTest(function(api) {
   api.use('tinytest');
   api.use('gunnarsturla:meteorflux-store');
-  api.addFiles('meteorflux-store-tests.js');
+  api.addFiles('store-tests.js');
 });

@@ -1,31 +1,29 @@
-CountersStore = function(){
+CountersStore = new Store('', function() {
   var self = this;
 
   // Dependencies
-  var catalogStore;
-  Dependency.autorun(function(){
+  catalogStore = null;
+  Dependency.autorun(function () {
     catalogStore = Dependency.get('CatalogStore');
   });
+});
 
-  // Getters
-  self.get = {
-    numberOfProducts: function(){
-      return Counters.findOne('Catalog') && Counters.findOne('Catalog').count || 0;
-    }
-  };
+CountersStore.helpers({
+  // Getters => Helpers
+  getNumberOfProducts: function(){
+    return Counters.findOne('Catalog') && Counters.findOne('Catalog').count || 0;
+  }
+});
 
   // Subscriptions
-  self.subscriptions = {
-    catalogCounter: function(template){
-      template.autorun(function(){
-        template.subscribe('CountersStore.CatalogCounter',  catalogStore.getSearchQuery());
-      });
-    }
-  };
-
-  return self;
-
+CountersStore.subscriptions = {
+  catalogCounter: function(template){
+    template.autorun(function(){
+      template.subscribe('CountersStore.CatalogCounter',  catalogStore.getSearchQuery());
+    });
+  }
 };
 
+
 // Initialize
-Dependency.add('CountersStore', new CountersStore());
+Dependency.add('CountersStore', CountersStore);

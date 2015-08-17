@@ -7,19 +7,19 @@ Dependency.autorun(function(){
 
 Template.LoginModalView.helpers({
   login: function(){
-    return UserStore.get.loginOrCreate() === 'login';
+    return UserStore.loginOrCreate() === 'login';
   }
 });
 
 Template.CreateAccountForm.helpers({
   create_error: function(){
-    return UserStore.get.createAccountError().reason;
+    return UserStore.createAccountError().reason;
   }
 });
 
 Template.LoginForm.helpers({
   login_error: function(){
-    return UserStore.get.loginError().reason;
+    return UserStore.loginError().reason;
   }
 });
 
@@ -57,7 +57,7 @@ Template.CreateAccountForm.events({
 
 Template.LoginModalView.onCreated(function(){
   this.autorun(function(){
-    var user_is_signing = UserStore.get.userIsSigning();
+    var user_is_signing = UserStore.userIsSigning();
     if (user_is_signing !== false) {
       $('#LoginModal').openModal({dismissible: false});
     } else if (user_is_signing === false) {

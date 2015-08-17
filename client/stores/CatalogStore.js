@@ -32,7 +32,7 @@ CatalogStore.helpers({
     return this._addingProduct.get();
   },
   getNumberOfProducts: function () {
-    return countersStore.get.numberOfProducts();
+    return countersStore.getNumberOfProducts();
   },
   getProductsInPage: function () {
     var actualPage      = catalogRouter.get.actualPage();

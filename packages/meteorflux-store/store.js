@@ -11,12 +11,15 @@ Store.prototype.actions = function(actions) {
 	self._actions = actions;
 
 	self.tokenId = Dispatcher.register(function(payload){
-		if(_.has(self._actions, payload.actionType)) {
+		var actionType = payload.actionType;
+		if(_.has(self._actions, actionType)) {
 
 			var params = _.omit(payload, 'actionType');
 
-			// Maybe bind self to the action functions?
-			self._actions[payload.actionType](params);
+			var func = self._actions[actionType];
+			func = _.bind(func, self);
+
+			func(params);
 		}
 	});
 };
@@ -32,7 +35,7 @@ Store.prototype.helpers = function(helpers) {
 
 		Template.registerHelper(key, helper);
 	});
-	// Add the helpers to the Store object
+	// Attach the helpers to the Store object
 	_.extend(this, helpers);
 
 };

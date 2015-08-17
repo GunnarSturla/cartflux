@@ -1,83 +1,57 @@
 // UserStore Creator
-var UserStore = function () {
+var UserStore = new Store('', function () {
   var self = this;
 
   // UserStore Reactive Vars
-  var userIsSigning = new ReactiveVar(false);
-  var loginOrCreate = new ReactiveVar('login');
-  var createError   = new ReactiveVar('');
-  var loginError    = new ReactiveVar('');
+  self._userIsSigning = new ReactiveVar(false);
+  self._loginOrCreate = new ReactiveVar('login');
+  self._createError = new ReactiveVar('');
+  self._loginError = new ReactiveVar('');
+});
 
+UserStore.actions({
   // Callbacks
-  self.on = {
-    userWantsToLogin: function(){
-      userIsSigning.set(true);
-      loginOrCreate.set('login');
-    },
-    userWantsToCreateAccount: function(){
-      userIsSigning.set(true);
-      loginOrCreate.set('create');
-    },
-    userCanceled: function(){
-      userIsSigning.set(false);
-    },
-    loginFailed: function(error){
-      loginError.set(error);
-    },
-    createAccountFailed: function(error){
-      createError.set(error);
-    },
-    loginOrCreateSucceed: function(){
-      loginError.set('');
-      createError.set('');
-      userIsSigning.set(false);
-    }
-  };
+  USER_WANTS_TO_LOGIN: function(){
+    this._userIsSigning.set(true);
+    this._loginOrCreate.set('login');
+  },
+  USER_WANTS_TO_CREATE_ACCOUNT: function(){
+    this._userIsSigning.set(true);
+    this._loginOrCreate.set('create');
+  },
+  USER_CANCELED: function(){
+    this._userIsSigning.set(false);
+  },
+  LOGIN_FAILED: function(payload){
+    this._loginError.set(payload.error);
+  },
+  CREATE_ACCOUNT_FAILED: function(payload){
+    this._createError.set(payload.error);
+  },
+  LOGIN_SUCCEED: function(){
+    this._loginError.set('');
+    this._createError.set('');
+    this._userIsSigning.set(false);
+  },
+  CREATE_ACCOUNT_SUCCEED: function(){
+    this.LOGIN_SUCCEED();
+  }
+});
 
+UserStore.helpers({
   // Getters
-  self.get = {
-    userIsSigning: function(){
-      return userIsSigning.get();
-    },
-    loginOrCreate: function(){
-      return loginOrCreate.get();
-    },
-    loginError: function(){
-      return loginError.get();
-    },
-    createAccountError: function(){
-      return createError.get();
-    }
-  };
-
-  self.tokenId = Dispatcher.register(function(payload){
-    switch(payload.actionType){
-      case "USER_WANTS_TO_LOGIN":
-        self.on.userWantsToLogin();
-        break;
-      case "USER_WANTS_TO_CREATE_ACCOUNT":
-        self.on.userWantsToCreateAccount();
-        break;
-      case "USER_CANCELED":
-        self.on.userCanceled();
-        break;
-      case "CREATE_ACCOUNT_FAILED":
-        self.on.createAccountFailed(payload.error);
-        break;
-      case "LOGIN_FAILED":
-        self.on.loginFailed(payload.error);
-        break;
-      case "LOGIN_SUCCEED":
-        self.on.loginOrCreateSucceed();
-        break;
-      case "CREATE_ACCOUNT_SUCCEED":
-        self.on.loginOrCreateSucceed();
-        break;
-    }
-  });
-
-  return self;
-};
-
+  userIsSigning: function(){
+    return this._userIsSigning.get();
+  },
+  loginOrCreate: function(){
+    return this._loginOrCreate.get();
+  },
+  loginError: function(){
+    return this._loginError.get();
+  },
+  createAccountError: function(){
+    return this._createError.get();
+  }
+});
 // Create the instance
-Dependency.add('UserStore', new UserStore());
+Dependency.add('UserStore', UserStore);
