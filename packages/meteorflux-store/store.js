@@ -6,7 +6,8 @@ Store = function(name, callback) {
 	cb();
 };
 Store.prototype = {
-	_subsHandles: new ReactiveVar([]),
+	_subsHandles: null,
+	_subsReady: true,
 
 	/**
 	 * @summary Register actions this store handles
@@ -54,6 +55,11 @@ Store.prototype = {
 		var self = this;
 		var args = Array.prototype.slice.call(arguments);
 
+		// initiate _subsHandles if it doesn't exist yet
+		if(!self._subsHandles) {
+			self._subsHandles = [];
+		}
+
 		var handle = Meteor.subscribe(args);
 
 		self._subsHandles.push(handle);
@@ -62,10 +68,12 @@ Store.prototype = {
 	},
 
 	subscriptionsReady: function() {
-
+		var self = this;
 		Tracker.autorun(function() {
-			return _.every(this._subsHandles, function(sub) { return sub.ready() } )
+			self._subsReady = _.every(this._subsHandles, function(sub) { return sub.ready() } );
 		});
+
+		return self._subsReady;
 	}
 
 };
