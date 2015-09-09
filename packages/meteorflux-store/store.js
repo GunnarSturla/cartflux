@@ -5,41 +5,67 @@ Store = function(name, callback) {
 	var cb = _.bind(callback, self);
 	cb();
 };
-Store.prototype.actions = function(actions) {
-	var self = this;
+Store.prototype = {
+	_subsHandles: new ReactiveVar([]),
 
-	self._actions = actions;
+	/**
+	 * @summary Register actions this store handles
+	 * @locus Anywhere
+	 * @param {Object} actions - object of functions where the property
+	 * corresponds to the action.
+	 * @namespace Store
+	 */
+	actions: function (actions) {
+		var self = this;
 
-	self.tokenId = Dispatcher.register(function(payload){
-		var actionType = payload.actionType;
-		if(_.has(self._actions, actionType)) {
+		self._actions = actions;
 
-			var params = _.omit(payload, 'actionType');
+		self.tokenId = Dispatcher.register(function (payload) {
+			var actionType = payload.actionType;
+			if (_.has(self._actions, actionType)) {
+
+				var params = _.omit(payload, 'actionType');
 
 
-			var func = self._actions[actionType];
-			func = _.bind(func, self);
+				var func = self._actions[actionType];
+				func = _.bind(func, self);
 
-			func(params);
-		}
-	});
-};
+				func(params);
+			}
+		});
+	},
 
-Store.prototype.helpers = function(helpers) {
-	var self = this;
+	/**
+	 * @summary Specify this store's helpers available to templates.
+	 * @locus Client
+	 * @param {Object} helpers Dictionary of helper functions by name.
+	 */
+	helpers: function (helpers) {
+		var self = this;
 
-	//_.each(helpers, function(helper, key) {
-	//	// If the app state is stored in the Stores
-	//	// then there's no need to access the template instance
-	//	// OR IS THERE??
-	//	helper = _.bind(helper, self);
-    //
-	//	Template.registerHelper(key, helper);
-	//});
+		Template.registerHelper(self.name, helpers);
 
-	Template.registerHelper(self.name, helpers);
+		// Attach the helpers to the Store object
+		_.extend(this, helpers);
 
-	// Attach the helpers to the Store object
-	_.extend(this, helpers);
+	},
+
+	subscribe: function (/* args */) {
+		var self = this;
+		var args = Array.prototype.slice.call(arguments);
+
+		var handle = Meteor.subscribe(args);
+
+		self._subsHandles.push(handle);
+
+		return handle;
+	},
+
+	subscriptionsReady: function() {
+
+		Tracker.autorun(function() {
+			return _.every(this._subsHandles, function(sub) { return sub.ready() } )
+		});
+	}
 
 };
